@@ -23,6 +23,15 @@ func BenchmarkPointerWrapperChainCalc(b *testing.B) {
 	}
 }
 
+func BenchmarkPointerWrapperGlobChainCalc(b *testing.B) {
+	c := &CalcPointer{Value: 1}
+	wrapper := abstract.SetGlobalCalc(c)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		wrapper = wrapper.WithAdd(1).WithMult(2).WithAdd(3).WithMult(4)
+	}
+}
+
 func BenchmarkPointerManyOperationsDirectCalc(b *testing.B) {
 	c := &CalcPointer{Value: 1}
 	b.ResetTimer()
@@ -36,6 +45,17 @@ func BenchmarkPointerManyOperationsDirectCalc(b *testing.B) {
 func BenchmarkPointerManyOperationsWrapperCalc(b *testing.B) {
 	c := &CalcPointer{Value: 1}
 	wrapper := abstract.GetCalc(c)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		for j := 0; j < 100; j++ {
+			wrapper = wrapper.WithAdd(j).WithMult(j + 1)
+		}
+	}
+}
+
+func BenchmarkPointerManyOperationsWrapperGlobCalc(b *testing.B) {
+	c := &CalcPointer{Value: 1}
+	wrapper := abstract.SetGlobalCalc(c)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		for j := 0; j < 100; j++ {
@@ -68,6 +88,18 @@ func BenchmarkPointerWrapperCalc(b *testing.B) {
 	}
 }
 
+func BenchmarkPointerWrapperGlobCalc(b *testing.B) {
+	c := &CalcPointer{Value: 1}
+	wrapper := abstract.SetGlobalCalc(c).WithMult(425354)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		wrapper.LightCalc(5)
+		wrapper.HeavyCalc(10)
+		wrapper.LightCalc(3)
+		wrapper.HeavyCalc(7)
+	}
+}
+
 func BenchmarkPointerMixedDirectChainCalc(b *testing.B) {
 	c := &CalcPointer{Value: 1}
 	c = c.WithMult(2).WithAdd(3)
@@ -81,6 +113,16 @@ func BenchmarkPointerMixedDirectChainCalc(b *testing.B) {
 func BenchmarkPointerMixedWrapperChainCalc(b *testing.B) {
 	c := &CalcPointer{Value: 1}
 	wrapper := abstract.GetCalc(c).WithMult(2).WithAdd(3)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		wrapper = wrapper.WithAdd(1).WithMult(2).WithAdd(3).WithMult(4)
+		wrapper.HeavyCalc(5234)
+	}
+}
+
+func BenchmarkPointerMixedWrapperGlobChainCalc(b *testing.B) {
+	c := &CalcPointer{Value: 1}
+	wrapper := abstract.SetGlobalCalc(c).WithMult(2).WithAdd(3)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		wrapper = wrapper.WithAdd(1).WithMult(2).WithAdd(3).WithMult(4)
@@ -104,6 +146,19 @@ func BenchmarkPointerHeavyInitMixedDirectChainCalc(b *testing.B) {
 func BenchmarkPointerHeavyInitMixedWrapperChainCalc(b *testing.B) {
 	c := &CalcPointer{Value: 1}
 	wrapper := abstract.GetCalc(c).WithMult(2).WithAdd(3)
+	for range 10000000 {
+		wrapper = wrapper.WithAdd(72345)
+	}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		wrapper = wrapper.WithAdd(1).WithMult(2).WithAdd(3).WithMult(4)
+		wrapper.HeavyCalc(5234)
+	}
+}
+
+func BenchmarkPointerHeavyInitMixedWrapperGlobChainCalc(b *testing.B) {
+	c := &CalcPointer{Value: 1}
+	wrapper := abstract.SetGlobalCalc(c).WithMult(2).WithAdd(3)
 	for range 10000000 {
 		wrapper = wrapper.WithAdd(72345)
 	}
