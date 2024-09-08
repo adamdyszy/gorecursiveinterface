@@ -23,3 +23,7 @@ func (c *CalcPointer) WithMult(num int) *CalcPointer {
 	c.Value *= num
 	return c
 }
+
+func (c *CalcPointer) GetValue() int {
+	return c.Value
+}

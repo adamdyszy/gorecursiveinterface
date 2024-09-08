@@ -9,26 +9,39 @@ type Calc[T any] interface {
 type NoRecursionCalc interface {
 	LightCalc(num int)
 	HeavyCalc(num int)
+	GetValue() int
 }
 
-type WrapperCalc struct {
-	NoRecursionCalc
-	WithAdd  func(num int) WrapperCalc
-	WithMult func(num int) WrapperCalc
+type WrapperCalc[T Calc[T]] struct {
+	calc T
 }
 
-func GetCalc[T NoRecursionCalc](calc Calc[T]) WrapperCalc {
-	NewWrapperCalc := make([]func(calc Calc[T]) WrapperCalc, 1)
-	NewWrapperCalc[0] = func(calc Calc[T]) WrapperCalc {
-		return WrapperCalc{
-			NoRecursionCalc: calc,
-			WithAdd: func(num int) WrapperCalc {
-				return NewWrapperCalc[0](any(calc.WithAdd(num)).(Calc[T]))
-			},
-			WithMult: func(num int) WrapperCalc {
-				return NewWrapperCalc[0](any(calc.WithMult(num)).(Calc[T]))
-			},
-		}
-	}
-	return NewWrapperCalc[0](calc)
+func (w WrapperCalc[T]) LightCalc(num int) {
+	w.calc.LightCalc(num)
 }
+
+func (w WrapperCalc[T]) HeavyCalc(num int) {
+	w.calc.HeavyCalc(num)
+}
+
+func (w WrapperCalc[T]) GetValue() int {
+	return w.calc.GetValue()
+}
+
+func (w WrapperCalc[T]) WithAdd(num int) WrapperCalc[T] {
+	w.calc = w.calc.WithAdd(num)
+	return w
+}
+
+func (w WrapperCalc[T]) WithMult(num int) WrapperCalc[T] {
+	w.calc = w.calc.WithMult(num)
+	return w
+}
+
+func GetCalc[T Calc[T]](calc T) WrapperCalc[T] {
+	return WrapperCalc[T]{calc: calc}
+}
+
+// func SetGlobalCalc[T Calc[T]](calc T) WrapperCalc[T] {
+// 	? = WrapperCalc[T]{calc: calc}
+// }

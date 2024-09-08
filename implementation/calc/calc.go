@@ -23,3 +23,7 @@ func (c Calc) WithMult(num int) Calc {
 	c.Value *= num
 	return c
 }
+
+func (c Calc) GetValue() int {
+	return c.Value
+}
