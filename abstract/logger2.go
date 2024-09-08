@@ -34,8 +34,8 @@ func (w WrapperLogger2[T]) V(level int) WrapperLogger2[T] {
 }
 
 // TODO: the problem is here, we cannot use SetGlobalLogger2
-// var GlobalLogger2 ?
+var GlobalLogger2 any
 
-// func SetGlobalLogger2[T Logger2[T]](logger T)  {
-// 	GlobalLogger2 = WrapperLogger2[T]{logger: logger}
-// }
+func SetGlobalLogger2[T Logger2[T]](logger T) {
+	GlobalLogger2 = WrapperLogger2[T]{logger: logger}
+}
