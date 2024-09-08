@@ -88,7 +88,7 @@ func BenchmarkMixedWrapperChainCalc(b *testing.B) {
 
 func BenchmarkHeavyInitMixedDirectChainCalc(b *testing.B) {
 	c := Calc{Value: 1}.WithMult(2).WithAdd(3)
-	for _ = range 10000000 {
+	for range 10000000 {
 		c = c.WithAdd(72345)
 	}
 	b.ResetTimer()
@@ -101,7 +101,7 @@ func BenchmarkHeavyInitMixedDirectChainCalc(b *testing.B) {
 func BenchmarkHeavyInitMixedWrapperChainCalc(b *testing.B) {
 	c := Calc{Value: 1}
 	wrapper := abstract.GetCalc(c).WithMult(2).WithAdd(3)
-	for _ = range 10000000 {
+	for range 10000000 {
 		wrapper = wrapper.WithAdd(72345)
 	}
 	b.ResetTimer()
