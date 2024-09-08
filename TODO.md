@@ -1,0 +1,2 @@
+- [ ] Test with benchmark
+- [ ] Write interface generator where you have options like, choose structure, generate interface for all methods, or choose which not to use, or which only to use
